@@ -34,11 +34,16 @@ class HTMLNode():
         
         if self.props:
             # self.props 기본값인 None이 아닐때만 변환
-            return reduce(lambda acc, x: f'{acc} {x[0]}="{x[1]}"', self.props.items(), "").lstrip()
+            return reduce(lambda acc, x: f'{acc} {x[0]}="{x[1]}"', self.props.items(), "")
             # @@@@ {acc} 바로 뒤에 빈칸 한칸 두는 방식으로 하면 맨 처음 key 앞에도 빈칸 생성됨
-            # @@@@ ===> .lstrip() 필요  
+            # @@@@ ===> .lstrip() 필요??? => 없다. 합쳐질 때, tag str 뒤에 빈칸 한개 필요하므로 그대로 두기
         
-        return None
+        return ""
 
     def __repr__(self):
-        return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props_to_html()})"
+        if self.props:
+            return f"{self.__class__.__name__}({self.tag}, {self.value}, {self.children}, {self.props_to_html()})"
+        return f"{self.__class__.__name__}({self.tag}, {self.value}, {self.children}, None)"
+        # @@@ {self.__class__.__name__}로 클래스 이름을 불러와서 표시하지 않으면
+        # @@@ 상속받은 클래스마다 __repr__을 override해서 이름을 수정해야한다
+        
