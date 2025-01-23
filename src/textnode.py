@@ -1,8 +1,8 @@
 from enum import Enum
 
 class TextType(Enum):
-    NORMAL = "Normal"
-    # int대신 str을 쓰면 TextType.NORMAL.value로 str값을 얻을 수 있다
+    RAW = "Raw"
+    # int대신 str을 쓰면 TextType.RAW.value로 str값을 얻을 수 있다
     BOLD = "Bold"
     ITALIC = "Italic"
     CODE = "Code"

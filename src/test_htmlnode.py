@@ -1,7 +1,8 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode, ParentNode
+from htmlnode import HTMLNode, LeafNode, ParentNode, text_node_to_html_node
 
+from textnode import TextType, TextNode
 
 class TestHTMLNode(unittest.TestCase):
     # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -30,6 +31,35 @@ class TestHTMLNode(unittest.TestCase):
         # with self.assertRaises(exception이름):
             # 지정한 exception이 나올지 확인할 코드
 
+    def test_convert_func(self):
+        def convert_and_check(node, expected):
+            converted_node = text_node_to_html_node(node)
+            self.assertTrue(converted_node.to_html() == expected)
+        # 반복되는 부분 함수로 만들기
+
+        cases = [
+            (("raw", TextType.RAW), "raw"), 
+            (("bold", TextType.BOLD), "<b>bold</b>"), 
+            (("italic", TextType.ITALIC), "<i>italic</i>"),
+            (("code", TextType.CODE), "<code>code</code>"),
+            (("link", TextType.LINK, "http://test.com"), '<a href="http://test.com">link</a>'),
+            (("alt", TextType.IMAGE, "http://testimage.com"), '<img src="http://testimage.com" alt="alt"></img>'),
+            ]
+        
+        for case in cases:
+            node = TextNode(*case[0])
+            # print(node)
+            convert_and_check(node, case[1])
+
+        node7 = TextNode("testing", "test_type")
+        with self.assertRaises(Exception):
+            try:
+                convert_and_check(node7, "testing")
+            except Exception as e:
+                print(e)
+                raise e
+
+
 
 class TestLeafNode(unittest.TestCase):
     # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -53,7 +83,9 @@ class TestLeafNode(unittest.TestCase):
             node3.to_html() == "raw"
             )
         
-        node4 = LeafNode(tag = "p", value="")
+        # node4 = LeafNode(tag = "p", value="")
+        # @@@@@ img 태그에는 value가 ""로 들어가므로 LeafNode 수정 및 이부분 수정
+        node4 = LeafNode(tag = "p", value=None)
         with self.assertRaises(ValueError):
             node4.to_html()
         # value 값이 비정상일 때 valueerror 잘 나오는지 확인
@@ -86,7 +118,7 @@ class TestParentNode(unittest.TestCase):
             try:
                 node2.to_html()
             except Exception as e:
-                print(e)
+                # print(e)
                 raise e
 
             # node2.to_html()

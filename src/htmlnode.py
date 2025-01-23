@@ -1,5 +1,7 @@
 from functools import reduce
 
+from textnode import TextType, TextNode
+
 class HTMLNode():
     def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag
@@ -56,7 +58,9 @@ class LeafNode(HTMLNode):
 
     def to_html(self):
         # leafnode의 데이터를 실제 html 코드로 반환하는 함수
-        if not self.value:
+        # if not self.value:
+        # @@@ ""인 경우는 통과하고 None은 여기서 raise하도록 변경
+        if self.value == None:
             raise ValueError("A leaf node must have a value")
 
         if not self.tag:
@@ -90,3 +94,24 @@ class ParentNode(HTMLNode):
         
         return f"<{self.tag}{self.props_to_html()}>{"".join(map(to_html_if_node, self.children))}</{self.tag}>"
         # children안의 모든 종속 노드들의 태그들을 합쳐서 이 ParentNode 태그 안에 넣기
+
+
+
+def text_node_to_html_node(text_node):
+    # TextNode를 LeafNode로 변환하는 함수
+    match text_node.text_type:
+        case TextType.RAW:
+            return LeafNode(tag=None, value=text_node.text)
+            # LeafNode는 tag 인자 필수 => raw text인 경우 None 입력
+        case TextType.BOLD:
+            return LeafNode(tag="b", value=text_node.text)
+        case TextType.ITALIC:
+            return LeafNode(tag="i", value=text_node.text)
+        case TextType.CODE:
+            return LeafNode(tag="code", value=text_node.text)
+        case TextType.LINK:
+            return LeafNode(tag="a", value=text_node.text, props={"href":text_node.url})
+        case TextType.IMAGE:
+            return LeafNode(tag="img", value="", props={"src":text_node.url, "alt":text_node.text})
+        case _:
+            raise Exception("Invalid text type")
