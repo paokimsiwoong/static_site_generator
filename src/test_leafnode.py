@@ -3,7 +3,7 @@ import unittest
 from leafnode import LeafNode
 
 
-class TestHTMLNode(unittest.TestCase):
+class TestLeafNode(unittest.TestCase):
     # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     # Both test functions and file names must start with test_ 
     # to be discoverable by unittest
@@ -13,12 +13,6 @@ class TestHTMLNode(unittest.TestCase):
         node = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
         self.assertTrue(node.__repr__() == 'LeafNode(a, Click me!, None,  href="https://www.google.com")')
         # f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props_to_html()})"
-    
-    def test_props_to_html(self):
-        # <a href="https://www.boot.dev">backend</a>
-        node = LeafNode(tag="a", value="backend", props={"href":"https://www.boot.dev"})
-        # print(node.props_to_html())
-        self.assertTrue(node.props_to_html() == ' href="https://www.boot.dev"')
 
     def test_to_html(self):
         node = LeafNode(tag = "p", value="test")
@@ -30,6 +24,11 @@ class TestHTMLNode(unittest.TestCase):
             node2.to_html() == '<a href="https://www.google.com">Click me!</a>' and
             node3.to_html() == "raw"
             )
+        
+        node4 = LeafNode(tag = "p", value="")
+        with self.assertRaises(ValueError):
+            node4.to_html()
+        # value 값이 비정상일 때 valueerror 잘 나오는지 확인
 
 
 if __name__ == "__main__":
