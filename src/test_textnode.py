@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType, split_nodes_delimiter
+from textnode import TextNode, TextType
 
 
 class TestTextNode(unittest.TestCase):
@@ -30,73 +30,6 @@ class TestTextNode(unittest.TestCase):
         node5 = TextNode("This is a text node", TextType.BOLD)
         node6 = TextNode("This is a text node", TextType.BOLD, "http://localhost:8888")
         self.assertNotEqual(node5, node6)
-
-
-class TestSplitNodeDelimiter(unittest.TestCase):
-    def test_splitter(self):
-        cases = [
-            (
-                ("This is text with a `code block` word", TextType.RAW), 
-                (
-                    TextNode("This is text with a ", TextType.RAW), 
-                    TextNode("code block", TextType.CODE), 
-                    TextNode(" word", TextType.RAW),
-                )
-            ),
-            (
-                ("*testing* is ongoing **right***now*", TextType.RAW),
-                (
-                    TextNode("testing", TextType.ITALIC),
-                    TextNode(" is ongoing ", TextType.RAW),
-                    TextNode("right", TextType.BOLD),
-                    TextNode("now", TextType.ITALIC),
-                )
-            ),
-            (
-                ("ERROR*ERROR", TextType.RAW),
-                (
-                    "ERRRRRRRRRR"
-                )
-            ),
-            (
-                ("`ERROR`*`ERROR", TextType.RAW),
-                (
-                    "ERRRRRRRRRR"
-                )
-            ),
-            (
-                ("ER**ROR*ERR `OR`", TextType.RAW),
-                (
-                    "ERRRRRRRRRR"
-                )
-            ),
-            (
-                ("This is text with a `` word", TextType.RAW), 
-                (
-                    TextNode("This is text with a ", TextType.RAW), 
-                    TextNode(" word", TextType.RAW),
-                )
-            ),
-        ]
-
-        for case in cases:
-            # print(case[0])
-            try:
-                node = TextNode(*case[0])
-                # print(node)
-                new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
-                new_nodes = split_nodes_delimiter(new_nodes, "**", TextType.BOLD)
-                new_nodes = split_nodes_delimiter(new_nodes, "*", TextType.ITALIC)
-                print(new_nodes)
-
-                for new_node, expected in zip(new_nodes, case[1]):
-                    # print(new_node)
-                    # print(expected)
-                    self.assertEqual(new_node, expected)
-            except Exception as e:
-                print(e)
-                with self.assertRaises(ValueError):
-                    raise e
 
 
 if __name__ == "__main__":

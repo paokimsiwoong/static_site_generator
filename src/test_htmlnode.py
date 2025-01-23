@@ -56,7 +56,7 @@ class TestHTMLNode(unittest.TestCase):
             try:
                 convert_and_check(node7, "testing")
             except Exception as e:
-                print(e)
+                # print(e)
                 raise e
 
 
