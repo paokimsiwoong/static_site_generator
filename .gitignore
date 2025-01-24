@@ -1,5 +1,7 @@
 __pycache__/
 
+public/
+
 *.ipynb
 
 architecture.png
