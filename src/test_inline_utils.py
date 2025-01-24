@@ -1,7 +1,8 @@
 import unittest
 
 from textnode import TextNode, TextType
-from inline_utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
+# from inline_utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
+from inline_utils import split_nodes_delimiter, split_nodes_image, split_nodes_link, text_to_textnodes
 
 class TestInlineUtils(unittest.TestCase):
     def test_splitter(self):
@@ -60,58 +61,13 @@ class TestInlineUtils(unittest.TestCase):
                 new_nodes = split_nodes_delimiter(new_nodes, "*", TextType.ITALIC)
                 # print(new_nodes)
 
-                for new_node, expected in zip(new_nodes, case[1]):
-                    # print(new_node)
-                    # print(expected)
-                    self.assertEqual(new_node, expected)
+                self.assertSequenceEqual(new_nodes, case[1])
+                # 간단한 assertSequenceEqual 사용하기
             except Exception as e:
                 # print(e)
                 with self.assertRaises(ValueError):
                     raise e
                 
-
-    def test_extract_images(self):
-        cases = [
-            (
-                "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
-                [('rick roll', 'https://i.imgur.com/aKaOqIh.gif'), ('obi wan', 'https://i.imgur.com/fJRm4Vk.jpeg')]
-            ),
-            (
-                "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
-                []
-            ),
-            (
-                "![tbi wan](https://i.imgur.com/fJRm4Vk.jpeg) This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
-                [('tbi wan', 'https://i.imgur.com/fJRm4Vk.jpeg'), ('rick roll', 'https://i.imgur.com/aKaOqIh.gif')]
-            ),
-        ]
-
-        for case in cases:
-            self.assertEqual(extract_markdown_images(case[0]), case[1])
-
-
-    def test_extract_links(self):
-        cases = [
-            (
-                "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
-                []
-            ),
-            (
-                "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
-                [('to boot dev', 'https://www.boot.dev'), ('to youtube', 'https://www.youtube.com/@bootdotdev')]
-            ),
-            (
-                "[tbi wan](https://i.imgur.com/fJRm4Vk.jpeg) This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
-                [('tbi wan', 'https://i.imgur.com/fJRm4Vk.jpeg'), ('obi wan', 'https://i.imgur.com/fJRm4Vk.jpeg')]
-            ),
-            (
-                "[tbi wan]](https://i.imgur.com/fJRm4Vk.jpeg) This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
-                [('obi wan', 'https://i.imgur.com/fJRm4Vk.jpeg')]
-            ),
-        ]
-
-        for case in cases:
-            self.assertEqual(extract_markdown_links(case[0]), case[1])
 
     def test_split_nodes_image(self):
         cases = [
@@ -146,10 +102,8 @@ class TestInlineUtils(unittest.TestCase):
             # print(node)
             new_nodes = split_nodes_image([node])
 
-            for new_node, expected in zip(new_nodes, case[1]):
-                # print(new_node)
-                # print(expected)
-                self.assertEqual(new_node, expected)
+            self.assertSequenceEqual(new_nodes, case[1])
+            # 간단한 assertSequenceEqual 사용하기
 
 
     def test_split_nodes_link(self):
@@ -185,17 +139,15 @@ class TestInlineUtils(unittest.TestCase):
             # print(node)
             new_nodes = split_nodes_link([node])
 
-            for new_node, expected in zip(new_nodes, case[1]):
-                # print(new_node)
-                # print(expected)
-                self.assertEqual(new_node, expected)
+            self.assertSequenceEqual(new_nodes, case[1])
+            # 간단한 assertSequenceEqual 사용하기
 
 
     def test_text_to_textnodes(self):
         cases = [
             (
                 "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)",
-                (
+                [
                     TextNode("This is ", TextType.RAW),
                     TextNode("text", TextType.BOLD),
                     TextNode(" with an ", TextType.RAW),
@@ -206,7 +158,7 @@ class TestInlineUtils(unittest.TestCase):
                     TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
                     TextNode(" and a ", TextType.RAW),
                     TextNode("link", TextType.LINK, "https://boot.dev"),
-                )
+                ]
             ),
         ]
 
@@ -214,11 +166,66 @@ class TestInlineUtils(unittest.TestCase):
             new_nodes = text_to_textnodes(case[0])
             # print(new_nodes)
 
-            for new_node, expected in zip(new_nodes, case[1]):
-                # print(new_node)
-                # print(expected)
-                self.assertEqual(new_node, expected)
+            # for new_node, expected in zip(new_nodes, case[1]):
+            #     # print(new_node)
+            #     # print(expected)
+            #     self.assertEqual(new_node, expected)
+            # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            # 해답의 assertListEqual 사용하기
+            self.assertListEqual(new_nodes, case[1])
+            # @@@@ ListEqual이므로 tuple이면 안된다 @@@@
+            # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            # list와 tuple을 비교하고 싶은 경우
+            # self.assertSequenceEqual(new_nodes, case[1]) 사용
+            # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+    # def test_extract_images(self):
+    #     cases = [
+    #         (
+    #             "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+    #             [('rick roll', 'https://i.imgur.com/aKaOqIh.gif'), ('obi wan', 'https://i.imgur.com/fJRm4Vk.jpeg')]
+    #         ),
+    #         (
+    #             "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+    #             []
+    #         ),
+    #         (
+    #             "![tbi wan](https://i.imgur.com/fJRm4Vk.jpeg) This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+    #             [('tbi wan', 'https://i.imgur.com/fJRm4Vk.jpeg'), ('rick roll', 'https://i.imgur.com/aKaOqIh.gif')]
+    #         ),
+    #     ]
+
+    #     for case in cases:
+    #         self.assertEqual(extract_markdown_images(case[0]), case[1])
+
+
+    # def test_extract_links(self):
+    #     cases = [
+    #         (
+    #             "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+    #             []
+    #         ),
+    #         (
+    #             "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+    #             [('to boot dev', 'https://www.boot.dev'), ('to youtube', 'https://www.youtube.com/@bootdotdev')]
+    #         ),
+    #         (
+    #             "[tbi wan](https://i.imgur.com/fJRm4Vk.jpeg) This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+    #             [('tbi wan', 'https://i.imgur.com/fJRm4Vk.jpeg'), ('obi wan', 'https://i.imgur.com/fJRm4Vk.jpeg')]
+    #         ),
+    #         (
+    #             "[tbi wan]](https://i.imgur.com/fJRm4Vk.jpeg) This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+    #             [('obi wan', 'https://i.imgur.com/fJRm4Vk.jpeg')]
+    #         ),
+    #     ]
+
+    #     for case in cases:
+    #         self.assertEqual(extract_markdown_links(case[0]), case[1])
