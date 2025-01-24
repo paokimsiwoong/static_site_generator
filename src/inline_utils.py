@@ -2,6 +2,19 @@ import re
 
 from textnode import TextNode, TextType
 
+
+def text_to_textnodes(text):
+    raw_node = TextNode(text, TextType.RAW)
+
+    split_nodes = split_nodes_delimiter([raw_node], "`", TextType.CODE)
+    split_nodes = split_nodes_delimiter(split_nodes, "**", TextType.BOLD)
+    split_nodes = split_nodes_delimiter(split_nodes, "*", TextType.ITALIC)
+    split_nodes = split_nodes_image(split_nodes)
+    split_nodes = split_nodes_link(split_nodes)
+
+    return split_nodes
+
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     # old_nodes 
     # split되기 전인 TextNode들의 리스트
@@ -129,18 +142,6 @@ def split_nodes_link(old_nodes):
             new_nodes.append(TextNode(cur, TextType.RAW))
 
     return new_nodes
-
-
-def text_to_textnodes(text):
-    raw_node = TextNode(text, TextType.RAW)
-
-    split_nodes = split_nodes_delimiter([raw_node], "`", TextType.CODE)
-    split_nodes = split_nodes_delimiter(split_nodes, "**", TextType.BOLD)
-    split_nodes = split_nodes_delimiter(split_nodes, "*", TextType.ITALIC)
-    split_nodes = split_nodes_image(split_nodes)
-    split_nodes = split_nodes_link(split_nodes)
-
-    return split_nodes
 
 
 # def extract_markdown_images(text):

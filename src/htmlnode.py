@@ -66,6 +66,12 @@ class LeafNode(HTMLNode):
         if not self.tag:
             # tag가 없으면 raw text로 반환
             return self.value
+        
+        # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        if self.tag == "br":
+            return "<br>"
+        # block안에서 줄바꿈을 담당할 노드 추가
+        # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
         # self.props_to_html()은 self.props가 None이면 ""반환
