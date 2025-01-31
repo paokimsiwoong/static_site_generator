@@ -1,6 +1,6 @@
 import os, shutil
 
-from static_utils import copy_static_to_public, generate_page
+from static_utils import copy_static_to_public, generate_pages_recursive, generate_page
 
 def main():
     # print(os.getcwd())
@@ -24,11 +24,17 @@ def main():
 
     copy_static_to_public(path_to_static, path_to_public)
 
-    path_to_content = "content/index.md"
-    path_to_template = "template.html"
-    path_to_dest = "public/index.html"
+    # path_to_content = "content/index.md"
+    # path_to_template = "template.html"
+    # path_to_dest = "public/index.html"
 
-    generate_page(path_to_content, path_to_template, path_to_dest)
+    # generate_page(path_to_content, path_to_template, path_to_dest)
+
+    path_to_content = "content/"
+    path_to_template = "template.html"
+    path_to_dest = "public/"
+
+    generate_pages_recursive(path_to_content, path_to_template, path_to_dest)
 
 
 if __name__ == "__main__":

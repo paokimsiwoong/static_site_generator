@@ -156,6 +156,20 @@ class TestMarkdownUtils(unittest.TestCase):
                     raise e
 
 
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# 해답에서 raise 체크하는 방식 참조
+#     def test_none(self):
+#         try:
+#             extract_title(
+#                 """
+# no title
+# """
+#             )
+#             self.fail("Should have raised an exception")
+#         except Exception as e:
+#             pass
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
         
 
 if __name__ == "__main__":
