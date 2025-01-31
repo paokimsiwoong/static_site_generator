@@ -6,6 +6,7 @@ from markdown_utils import (
     markdown_to_blocks, 
     block_to_block_type,
     markdown_to_html_node,
+    extract_title,
     type_heading,
     type_code,
     type_quote,
@@ -110,6 +111,52 @@ class TestMarkdownUtils(unittest.TestCase):
 
             self.assertEqual(html_text, case[1])
 
+
+    def test_extract_title(self):
+        cases = [
+            (
+                "# Title\n\n## ul test 1\n\n- ul **first** line\n- ul *second* line\n- ul third line\n\n## ul test 2\n\n* ul first line\n* ul second line\n* ul third line\n\n### ol test\n\n1. ol first line\n2. ol second line\n3. ol third line",
+                "Title"
+            ),
+            (
+                                """
+                # This is a heading
+
+
+
+                This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+                * This is the first list item in a list block
+                * This is a list item
+                * This is another list item
+                * This is another list item
+                * This is another list item
+                    
+                This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+                This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+                This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+                """,
+                "This is a heading"
+            ),
+            (
+                "#### link and image test\n\n> [tbi wan](https://i.imgur.com/fJRm4Vk.jpeg) This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)\n> This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)\n> `inline code`\n\n##### code block test\n\n```\nblock = code\ntesting = 0\n```\n\n###### paragraph\n\njust paragraph\nnothing to see here",
+                "ERRRRRRORRORORR"
+            ),
+        ]
+
+        for case in cases:
+            try:
+                title = extract_title(case[0])
+
+                self.assertEqual(title, case[1])
+            except Exception as e:
+                print(e)
+                with self.assertRaises(Exception):
+                    raise e
+
+
+        
 
 if __name__ == "__main__":
     unittest.main()

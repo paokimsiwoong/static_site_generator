@@ -1,26 +1,6 @@
 import os, shutil
 
-
-def copy_static_to_public(cur_path_to_static, cur_path_to_public):
-    # 루트 경로의 public 폴더를 초기화하고 static 폴더의 내용을 복사하는 함수 
-    paths = os.listdir(cur_path_to_static)
-    print(paths)
-
-    for path in paths:
-        new_path_to_static = os.path.join(cur_path_to_static, path)
-        new_path_to_public = os.path.join(cur_path_to_public, path)
-        # path는 파일또는 경로의 이름 => os.path.join으로 기존 경로와 합쳐주기
-
-        if os.path.isfile(new_path_to_static):
-            # 파일인 경우에는 바로 복사
-            shutil.copy(new_path_to_static, new_path_to_public)
-        else:
-            # 파일이 아니라 경로인 경우 재귀를 이용해 내부로 들어가 복사 재개
-            os.mkdir(new_path_to_public)
-            # 디렉토리 생성
-            copy_static_to_public(new_path_to_static, new_path_to_public)
-            # 재귀 실행
-
+from static_utils import copy_static_to_public, generate_page
 
 def main():
     # print(os.getcwd())
@@ -43,6 +23,12 @@ def main():
     # 새로 public 폴더 생성
 
     copy_static_to_public(path_to_static, path_to_public)
+
+    path_to_content = "content/index.md"
+    path_to_template = "template.html"
+    path_to_dest = "public/index.html"
+
+    generate_page(path_to_content, path_to_template, path_to_dest)
 
 
 if __name__ == "__main__":

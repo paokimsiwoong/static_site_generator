@@ -16,6 +16,53 @@ type_paragraph = "paragraph" # <p> </p>
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
+def extract_title(markdown):
+    # h1 header를 찾아 그 내용을 반환하는 함수
+
+    blocks = markdown_to_blocks(markdown)
+    # 마크다운 원문을 block들로 분리
+    
+    for block in blocks:
+        block_type = block_to_block_type(block)
+
+        if block_type != type_heading:
+            continue
+
+        lines = block.split("\n")
+        # block의 여러 줄들을 분리해서 lines에 저장
+
+        match = re.match(r"^(#{1,6})\s(.*)", lines[0])
+        num_shop = len(match.group(1))
+        # # 개수 확인
+
+        if num_shop != 1:
+            continue
+
+        raw_lines = []
+
+        raw_lines.append(match.group(2))
+        # 첫번째 줄은 # 제거한 것을 입력
+        raw_lines.extend(lines[1:])
+        # 나머지는 그대로
+
+        return "\n".join(raw_lines).strip()
+
+        
+
+    raise Exception("Invalid markdown, no title found")
+    # h1 header 즉 "# ~~~" 꼴이 마크다운에 없으면 raise
+
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# 해답은 엄청 단순하게 "\n"으로 나눈 후 line.startswith("# ") 사용
+# def extract_title(md):
+#     lines = md.split("\n")
+#     for line in lines:
+#         if line.startswith("# "):
+#             return line[2:]
+#     raise ValueError("No title found")
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
 def markdown_to_html_node(markdown):
     # 마크다운 원문을 모든 정보를 담은 HTMLNode로 변환해 반환하는 함수
 
